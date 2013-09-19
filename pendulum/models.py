@@ -277,7 +277,7 @@ class Entry(models.Model):
         If this entry is paused, unpause it
         """
         if self.is_paused:
-            delta = datetime.now() - self.pause_time
+            delta = datetime.now() - self.pause_time.replace(tzinfo=None)
             self.seconds_paused += delta.seconds
             self.pause_time = None
 

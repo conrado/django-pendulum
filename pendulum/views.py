@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.sites.models import Site
+from django.contrib import messages
 from pendulum.forms import ClockInForm, ClockOutForm, AddUpdateEntryForm
 from pendulum.models import Entry
 from pendulum.utils import determine_period
@@ -73,11 +74,11 @@ def clock_in(request):
             e.save()
 
             # create a message that may be displayed to the user
-            request.user.message_set.create(message='You have clocked into %s' % e.project)
+            messages.add_message(request, messages.INFO, 'You have clocked into %s' % e.project)
             return HttpResponseRedirect(reverse('pendulum-entries'))
         else:
             # show an error message
-            request.user.message_set.create(message='Please correct the errors below.')
+            messages.add_message(request, messages.ERROR, 'Please correct the errors below.')
     else:
         # send back an empty form
         form = ClockInForm()
@@ -106,7 +107,7 @@ def clock_out(request, entry_id):
                                   end_time__isnull=True)
     except:
         # if this entry does not exist, redirect to the entry list
-        request.user.message_set.create(message='Invalid log entry.')
+        messages.add_message(request, messages.ERROR, 'Invalid log entry.')
         return HttpResponseRedirect(reverse('pendulum-entries'))
 
     if request.method == 'POST':
@@ -121,11 +122,11 @@ def clock_out(request, entry_id):
             entry.save()
 
             # create a message to show to the user
-            request.user.message_set.create(message="You've been clocked out.")
+            messages.add_message(request, messages.ERROR, "You've been clocked out.")
             return HttpResponseRedirect(reverse('pendulum-entries'))
         else:
             # create an error message for the user
-            request.user.message_set.create(message="Invalid entry!")
+            messages.add_message(request, messages.ERROR, "Invalid entry!")
     else:
         # send back an empty form
         form = ClockOutForm()
@@ -151,7 +152,7 @@ def toggle_paused(request, entry_id):
                                   end_time__isnull=True)
     except:
         # create an error message for the user
-        request.user.message_set.create(message='The entry could not be paused.  Please try again.')
+        messages.add_message(request, messages.ERROR, 'The entry could not be paused.  Please try again.')
     else:
         # toggle the paused state
         entry.toggle_paused()
@@ -165,7 +166,7 @@ def toggle_paused(request, entry_id):
             action = 'resumed'
 
         # create a message that can be displayed to the user
-        request.user.message_set.create(message='The log entry has been %s.' % action)
+        messages.add_message(request, messages.INFO, 'The log entry has been %s.' % action)
 
     # redirect to the log entry list
     return HttpResponseRedirect(reverse('pendulum-entries'))
@@ -189,7 +190,7 @@ def update_entry(request, entry_id):
                                   end_time__isnull=False)
     except:
         # entry does not exist
-        request.user.message_set.create(message='No such log entry.')
+        messages.add_message(request, messages.ERROR, 'No such log entry.')
         return HttpResponseRedirect(reverse('pendulum-entries'))
 
     if request.method == 'POST':
@@ -202,13 +203,13 @@ def update_entry(request, entry_id):
             form.save()
 
             # create a message for the user
-            request.user.message_set.create(message='The entry has been updated successfully.')
+            messages.add_message(request, messages.INFO, 'The entry has been updated successfully.')
 
             # redirect them to the log entry list
             return HttpResponseRedirect(reverse('pendulum-entries'))
         else:
             # create an error message
-            request.user.message_set.create(message='Please fix the errors below.')
+            messages.add_message(request, messages.ERROR, 'Please fix the errors below.')
     else:
         # populate the form with the original entry information
         form = AddUpdateEntryForm(instance=entry)
@@ -234,17 +235,17 @@ def delete_entry(request, entry_id):
                                   user=request.user)
     except:
         # entry does not exist
-        request.user.message_set.create(message='No such log entry.')
+        messages.add_message(request, messages.ERROR, 'No such log entry.')
         return HttpResponseRedirect(reverse('pendulum-entries'))
 
     if request.method == 'POST':
         key = request.POST.get('key', None)
         if key and key == entry.delete_key:
             entry.delete()
-            request.user.message_set.create(message='Entry deleted.')
+            messages.add_message(request, messages.INFO, 'Entry deleted.')
             return HttpResponseRedirect(reverse('pendulum-entries'))
         else:
-            request.user.message_set.create(message='You do not appear to be authorized to delete this entry!')
+            messages.add_message(request, messages.ERROR, 'You do not appear to be authorized to delete this entry!')
 
     return render_to_response('pendulum/delete_entry.html',
                               {'entry': entry},
@@ -277,13 +278,13 @@ def add_entry(request):
             entry.save()
 
             # create a message for the user
-            request.user.message_set.create(message='The entry has been added successfully.')
+            messages.add_message(request, messages.INFO, 'The entry has been added successfully.')
 
             # redirect them to the log entry list
             return HttpResponseRedirect(reverse('pendulum-entries'))
         else:
             # create an error message for the user to see
-            request.user.message_set.create(message='Please correct the errors below')
+            messages.add_message(request, messages.ERROR, 'Please correct the errors below.')
     else:
         # send back an empty form
         form = AddUpdateEntryForm()

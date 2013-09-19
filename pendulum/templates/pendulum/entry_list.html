@@ -11,11 +11,11 @@
 <table id="entry-table">
     <tr>
         <th colspan="7">
-            <a href="{% url pendulum-previous-entries previous_period %}" title="Go to the previous period">&laquo;</a>
+            <a href="{% url "pendulum-previous-entries" previous_period %}" title="Go to the previous period">&laquo;</a>
             {{ period.0|date:"N j, Y" }} -
             {{ period.1|date:"N j, Y" }}
             {% if has_next %}
-            <a href="{% url pendulum-previous-entries next_period %}" title="Go to the next period">&raquo;</a>
+            <a href="{% url "pendulum-previous-entries" next_period %}" title="Go to the next period">&raquo;</a>
             {% else %}
             &raquo;
             {% endif %}
@@ -36,20 +36,20 @@
     {% ifchanged entry.start_time.date %}{% day_totals entry.start_time.date %}{% endifchanged %}
     <tr class="{% cycle odd,even as rowclass %}">
         <td class="entry-date">
-            {% if entry.is_closed %}<a href="{% url pendulum-update entry.id %}" title="Update this entry">{% endif %}{{ entry.start_time|date:"j N Y" }}{% if entry.is_closed %}</a>{% endif %}
+            {% if entry.is_closed %}<a href="{% url "pendulum-update" entry.id %}" title="Update this entry">{% endif %}{{ entry.start_time|date:"j N Y" }}{% if entry.is_closed %}</a>{% endif %}
         </td>
         <td class="entry-start">{{ entry.start_time|date:"P" }}</td>
         <td class="entry-end">{% if entry.end_time %}
             {{ entry.end_time|date:"P" }}{% else %}
-            <a href="{% url pendulum-clock-out entry.id %}">Clock Out</a>
+            <a href="{% url "pendulum-clock-out" entry.id %}">Clock Out</a>
         {% endif %}</td>
         <td class="entry-hours">{% if entry.end_time %}
             {{ entry.total_time }}<br />
             <span class="hours">({{ entry.hours }})</span>{% else %}
             {% if entry.is_paused %}
-            <a href="{% url pendulum-toggle-paused entry.id %}">Unpause</a>
+            <a href="{% url "pendulum-toggle-paused" entry.id %}">Unpause</a>
             {% else %}
-            <a href="{% url pendulum-toggle-paused entry.id %}">Pause</a>
+            <a href="{% url "pendulum-toggle-paused" entry.id %}">Pause</a>
             {% endif %}
         {% endif %}</td>
         <td class="entry-project">{{ entry.project }}</td>
@@ -61,8 +61,8 @@
             {% endif %}
         </td>
         <td class="entry-admin">
-            {% if entry.is_closed %}<a href="{% url pendulum-update entry.id %}">&delta;</a>{% endif %}
-            <a href="{% url pendulum-delete entry.id %}">&times;</a>
+            {% if entry.is_closed %}<a href="{% url "pendulum-update" entry.id %}">&delta;</a>{% endif %}
+            <a href="{% url "pendulum-delete" entry.id %}">&times;</a>
         </td>
     </tr>
     {% if entry.seconds_paused %}<tr class="{{ rowclass }} entry-paused">

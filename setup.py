@@ -31,5 +31,8 @@ setup(
         'Topic :: Office/Business :: Financial :: Accounting',
         'Topic :: Office/Business :: Scheduling',
     ],
+    install_requires=[
+        'pytz >= 2013d',
+    ],
     zip_safe=False,
 )

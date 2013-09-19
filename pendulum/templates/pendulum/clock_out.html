@@ -5,7 +5,7 @@
 
 {{ block.super }}
 
-<form action="{% url pendulum-clock-out entry.id %}" method="post">
+<form action="{% url 'pendulum-clock-out' entry.id %}" method="post">
 <table>
 {{ form }}
 </table>
