@@ -3,6 +3,7 @@ from pendulum.models import Project, Activity, Entry
 from pendulum.fields import PendulumDateTimeField
 from pendulum.widgets import PendulumDateTimeWidget
 from datetime import datetime
+from django.utils.timezone import now
 
 class ClockInForm(forms.Form):
     """
@@ -51,7 +52,7 @@ class AddUpdateEntryForm(forms.ModelForm):
         except KeyError:
             pass
 
-        if start > datetime.now():
+        if start > now():
             raise forms.ValidationError('You cannot add entries in the future!')
 
         return start
@@ -71,7 +72,7 @@ class AddUpdateEntryForm(forms.ModelForm):
         except:
             raise forms.ValidationError('Please enter an end time.')
 
-        if end > datetime.now():
+        if end > now():
             raise forms.ValidationError('You cannot clock out in the future!')
 
         if start >= end:

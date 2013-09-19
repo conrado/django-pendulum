@@ -10,10 +10,10 @@ if hasattr(settings, 'PENDULUM_DATE_MEDIA'):
     PENDULUM_DATE_MEDIA = settings.PENDULUM_DATE_MEDIA
 else:
     PENDULUM_DATE_MEDIA = {
-        'js': (settings.MEDIA_URL + 'pendulum/js/jquery.js',
-               settings.MEDIA_URL + 'pendulum/js/jquery.ui.js'),
+        'js': (settings.STATIC_URL + 'js/jquery.js',
+               settings.STATIC_URL + 'js/jquery.ui.js'),
         'css': {
-            'all': (settings.MEDIA_URL + 'pendulum/css/jquery-ui.css',)
+            'all': (settings.STATIC_URL + 'css/jquery-ui.css',)
         }
     }
 

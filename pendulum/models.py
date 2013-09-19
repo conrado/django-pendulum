@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
+from django.utils.timezone import utc
+from django.utils.timezone import now
 from datetime import datetime, date, timedelta
 from pendulum import utils
 
@@ -270,14 +272,14 @@ class Entry(models.Model):
         If this entry is not paused, pause it.
         """
         if not self.is_paused:
-            self.pause_time = datetime.now()
+            self.pause_time = now()
 
     def unpause(self):
         """
         If this entry is paused, unpause it
         """
         if self.is_paused:
-            delta = datetime.now() - self.pause_time.replace(tzinfo=None)
+            delta = now() - self.pause_time.replace(tzinfo=utc)
             self.seconds_paused += delta.seconds
             self.pause_time = None
 

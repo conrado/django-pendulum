@@ -8,7 +8,7 @@ $(document).ready(function () {
     $('input.vDateField').datepicker({
             dateFormat: $.datepicker.W3C,
             showOn: 'both',
-            buttonImage: '{{ MEDIA_URL }}pendulum/img/calendar.png',
+            buttonImage: '{{ STATIC_URL }}img/calendar.png',
             buttonImageOnly: true
         });
 });
@@ -21,6 +21,7 @@ $(document).ready(function () {
 {{ block.super }}
 
 <form action="{{ callback }}" method="post">
+{% csrf_token %}
 <table>{{ form }}</table>
 <input type="submit" value="{{ add_update }} Entry" />
 </form>

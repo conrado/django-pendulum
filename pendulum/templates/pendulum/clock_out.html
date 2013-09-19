@@ -6,6 +6,7 @@
 {{ block.super }}
 
 <form action="{% url 'pendulum-clock-out' entry.id %}" method="post">
+{% csrf_token %}
 <table>
 {{ form }}
 </table>
